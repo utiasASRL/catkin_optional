@@ -1,0 +1,10 @@
+set(PROJECT_NAME @PROJECT_NAME@)
+
+set(${PROJECT_NAME}_INCLUDE_DIRS @CONF_INCLUDE_DIRS@)
+set(${PROJECT_NAME}_LIBRARIES @CONF_LIBRARIES@)
+
+foreach(extra @CONF_CFG_EXTRAS@)
+  include(${extra})
+endforeach()
+
+set(${PROJECT_NAME}_FOUND TRUE)
