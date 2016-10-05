@@ -136,7 +136,7 @@ macro(co_export)
   else()
     # export to cmake's database
     export(PACKAGE ${PROJECT_NAME})
-    set(CONFIG_IN "${_CATKIN_OPTIONAL_DIR}/catkin_optionalConfig.cmake.in")
+    set(CONFIG_IN "${_CATKIN_OPTIONAL_DIR}/templates/catkin_optionalConfig.cmake.in")
 
     # generate package config for the build tree
     set(CONF_INCLUDE_DIRS ${${PROJECT_NAME}_INCLUDE_DIRS})
@@ -155,8 +155,8 @@ macro(co_export)
       "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
 
     # generate package config version
-    set(CONFIG_VERSION "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake")
-    configure_file("${_CATKIN_OPTIONAL_DIR}/catkin_optionalConfigVersion.cmake.in"
+    set(CONFIG_VERSION "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config-version.cmake")
+    configure_file("${_CATKIN_OPTIONAL_DIR}/templates/catkin_optionalConfig-version.cmake.in"
       ${CONFIG_VERSION} @ONLY)
 
     # generate package config for the install
@@ -178,7 +178,7 @@ macro(co_export)
 
   # generate package config for the uninstall
   set(UNINSTALL_CMAKE "${CMAKE_CURRENT_BINARY_DIR}/cmake-uninstall.cmake")
-  configure_file("${_CATKIN_OPTIONAL_DIR}/catkin_optional-uninstall.cmake.in"
+  configure_file("${_CATKIN_OPTIONAL_DIR}/templates/catkin_optional-uninstall.cmake.in"
     ${UNINSTALL_CMAKE} IMMEDIATE @ONLY)
 endmacro()
 
