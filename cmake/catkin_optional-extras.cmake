@@ -39,6 +39,8 @@ if(CATKIN_ON)
   set(DEF_INSTALL_BIN_DIR ${CATKIN_PACKAGE_BIN_DESTINATION})
   set(DEF_INSTALL_INCLUDE_DIR ${CATKIN_GLOBAL_INCLUDE_DESTINATION})
   set(DEF_INSTALL_CMAKE_DIR ${CATKIN_PACKAGE_SHARE_DESTINATION})
+  # also devel location for pre-install exports
+  set(CMAKE_DEVEL_PREFIX ${CATKIN_DEVEL_PREFIX})
 else()
   # sane default install paths for vanilla cmake
   set(DEF_INSTALL_LIB_DIR lib)
@@ -49,6 +51,7 @@ else()
   else()
     set(DEF_INSTALL_CMAKE_DIR lib/cmake/${PROJECT_NAME})
   endif()
+  set(CMAKE_DEVEL_PREFIX ${PROJECT_BINRARY_DIR})
 endif()
 
 # Offer the user the choice of overriding the installation directories
@@ -82,7 +85,7 @@ macro(co_find)
   # find and record each dependency
   foreach(dep ${ARGN})
     find_package(${dep} REQUIRED)
-    if(${CATKIN_ON} AND ${${dep}_FOUND_CATKIN_PROJECT})
+    if("${CATKIN_ON}" AND "${${dep}_FOUND_CATKIN_PROJECT}")
       list(APPEND ${PROJECT_NAME}_CATKIN_BUILD_DEPENDS ${dep})
       list(APPEND ${PROJECT_NAME}_CATKIN_BUILD_DEPENDS_EXPORTED_TARGETS ${${dep}_EXPORTED_TARGETS})
     else()
@@ -96,11 +99,6 @@ macro(co_find)
       include_directories(${${DEP}_INCLUDE_DIRS} ${${DEP}_INCLUDE_DIR})
     endif()
   endforeach()
-
-  # find catkin dependencies as modules to set up catkin variables
-  if(${CATKIN_ON})
-    find_package(catkin REQUIRED COMPONENTS ${${PROJECT_NAME}_CATKIN_BUILD_DEPENDS})
-  endif()
 endmacro()
 
 function(_co_config)
