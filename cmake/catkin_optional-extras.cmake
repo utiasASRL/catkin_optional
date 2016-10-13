@@ -85,25 +85,17 @@ macro(co_find)
   # find and record each dependency
   foreach(dep ${ARGN})
     find_package(${dep} REQUIRED)
-    if("${CATKIN_ON}" AND "${${dep}_FOUND_CATKIN_PROJECT}")
-      list(APPEND ${PROJECT_NAME}_CATKIN_BUILD_DEPENDS ${dep})
-      list(APPEND ${PROJECT_NAME}_CATKIN_BUILD_DEPENDS_EXPORTED_TARGETS ${${dep}_EXPORTED_TARGETS})
-    else()
-      list(APPEND ${PROJECT_NAME}_CMAKE_BUILD_DEPENDS)
-    endif()
 
-    # auto include the dependency's includes
+    # dependency auto include and library aggregation
+    list(APPEND ${PROJECT_NAME}_DEPEND_LIBRARIES ${${dep}_LIBRARIES})
     include_directories(${${dep}_INCLUDE_DIRS} ${${dep}_INCLUDE_DIR})
     string(TOUPPER ${dep} DEP)
     if(NOT ${dep} STREQUAL ${DEP})
+      list(APPEND ${PROJECT_NAME}_DEPEND_LIBRARIES ${${DEP}_LIBRARIES})
       include_directories(${${DEP}_INCLUDE_DIRS} ${${DEP}_INCLUDE_DIR})
     endif()
   endforeach()
 endmacro()
-
-function(_co_config)
-  
-endfunction()
 
 # configuration for what to export during package config and install
 macro(co_export)
