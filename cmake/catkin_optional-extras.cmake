@@ -33,6 +33,13 @@ if(${CATKIN_ON})
   endif()
 endif()
 
+# set the devel prefix (the working directory for generated files)
+if(${CATKIN_ON})
+  set(CMAKE_DEVEL_PREFIX ${CATKIN_DEVEL_PREFIX})
+else()
+  set(CMAKE_DEVEL_PREFIX ${PROJECT_BINARY_DIR})
+endif()
+
 ### FUNCTIONS ###
 
 # configure build type
@@ -64,7 +71,6 @@ endmacro()
 
 # configuration for what to export during package config and install
 macro(co_export)
-  set(ARG_NAMES )
   cmake_parse_arguments(${PROJECT_NAME}
     "" # options
     "VERSION" # single-value
@@ -145,8 +151,6 @@ macro(co_install)
     set(DEF_INSTALL_BIN_DIR ${CATKIN_PACKAGE_BIN_DESTINATION})
     set(DEF_INSTALL_INCLUDE_DIR ${CATKIN_GLOBAL_INCLUDE_DESTINATION})
     set(DEF_INSTALL_CMAKE_DIR ${CATKIN_PACKAGE_SHARE_DESTINATION})
-    # also devel location for pre-install exports
-    set(CMAKE_DEVEL_PREFIX ${CATKIN_DEVEL_PREFIX})
   else()
     # sane default install paths for vanilla cmake
     set(DEF_INSTALL_LIB_DIR lib)
@@ -157,7 +161,6 @@ macro(co_install)
     else()
       set(DEF_INSTALL_CMAKE_DIR lib/cmake/${PROJECT_NAME})
     endif()
-    set(CMAKE_DEVEL_PREFIX ${PROJECT_BINRARY_DIR})
   endif()
 
   # Offer the user the choice of overriding the installation directories
