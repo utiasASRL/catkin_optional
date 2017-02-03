@@ -33,40 +33,12 @@ if(${CATKIN_ON})
   endif()
 endif()
 
-if(CATKIN_ON)
-  # catkin provides install paths
-  set(DEF_INSTALL_LIB_DIR ${CATKIN_PACKAGE_LIB_DESTINATION})
-  set(DEF_INSTALL_BIN_DIR ${CATKIN_PACKAGE_BIN_DESTINATION})
-  set(DEF_INSTALL_INCLUDE_DIR ${CATKIN_GLOBAL_INCLUDE_DESTINATION})
-  set(DEF_INSTALL_CMAKE_DIR ${CATKIN_PACKAGE_SHARE_DESTINATION})
-  # also devel location for pre-install exports
+# set the devel prefix (the working directory for generated files)
+if(${CATKIN_ON})
   set(CMAKE_DEVEL_PREFIX ${CATKIN_DEVEL_PREFIX})
 else()
-  # sane default install paths for vanilla cmake
-  set(DEF_INSTALL_LIB_DIR lib)
-  set(DEF_INSTALL_BIN_DIR bin)
-  set(DEF_INSTALL_INCLUDE_DIR include)
-  if(WIN32 AND NOT CYGWIN)
-    set(DEF_INSTALL_CMAKE_DIR CMake)
-  else()
-    set(DEF_INSTALL_CMAKE_DIR lib/cmake/${PROJECT_NAME})
-  endif()
-  set(CMAKE_DEVEL_PREFIX ${PROJECT_BINRARY_DIR})
+  set(CMAKE_DEVEL_PREFIX ${PROJECT_BINARY_DIR})
 endif()
-
-# Offer the user the choice of overriding the installation directories
-set(INSTALL_LIB_DIR ${DEF_INSTALL_LIB_DIR} CACHE PATH "Installation directory for libraries")
-set(INSTALL_BIN_DIR ${DEF_INSTALL_BIN_DIR} CACHE PATH "Installation directory for executables")
-set(INSTALL_INCLUDE_DIR ${DEF_INSTALL_INCLUDE_DIR} CACHE PATH "Installation directory for header files")
-set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH "Installation directory for CMake files")
-
-# Make relative paths absolute (needed later on)
-foreach(p LIB BIN INCLUDE CMAKE)
-  set(var INSTALL_${p}_DIR)
-  if(NOT IS_ABSOLUTE "${${var}}")
-    set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
-  endif()
-endforeach()
 
 ### FUNCTIONS ###
 
@@ -99,7 +71,6 @@ endmacro()
 
 # configuration for what to export during package config and install
 macro(co_export)
-  set(ARG_NAMES )
   cmake_parse_arguments(${PROJECT_NAME}
     "" # options
     "VERSION" # single-value
@@ -174,6 +145,39 @@ endmacro()
 
 # set install locations, and install include and libraries
 macro(co_install)
+  if(CATKIN_ON)
+    # catkin provides install paths
+    set(DEF_INSTALL_LIB_DIR ${CATKIN_PACKAGE_LIB_DESTINATION})
+    set(DEF_INSTALL_BIN_DIR ${CATKIN_PACKAGE_BIN_DESTINATION})
+    set(DEF_INSTALL_INCLUDE_DIR ${CATKIN_GLOBAL_INCLUDE_DESTINATION})
+    set(DEF_INSTALL_CMAKE_DIR ${CATKIN_PACKAGE_SHARE_DESTINATION})
+  else()
+    # sane default install paths for vanilla cmake
+    set(DEF_INSTALL_LIB_DIR lib)
+    set(DEF_INSTALL_BIN_DIR bin)
+    set(DEF_INSTALL_INCLUDE_DIR include)
+    if(WIN32 AND NOT CYGWIN)
+      set(DEF_INSTALL_CMAKE_DIR CMake)
+    else()
+      set(DEF_INSTALL_CMAKE_DIR lib/cmake/${PROJECT_NAME})
+    endif()
+  endif()
+
+  # Offer the user the choice of overriding the installation directories
+  set(INSTALL_LIB_DIR ${DEF_INSTALL_LIB_DIR} CACHE PATH "Installation directory for libraries")
+  set(INSTALL_BIN_DIR ${DEF_INSTALL_BIN_DIR} CACHE PATH "Installation directory for executables")
+  set(INSTALL_INCLUDE_DIR ${DEF_INSTALL_INCLUDE_DIR} CACHE PATH "Installation directory for header files")
+  set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH "Installation directory for CMake files")
+
+  # Make relative paths absolute (needed later on)
+  foreach(p LIB BIN INCLUDE CMAKE)
+    set(var INSTALL_${p}_DIR)
+    if(NOT IS_ABSOLUTE "${${var}}")
+      set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
+    endif()
+  endforeach()
+
+
   # actually install
   install(TARGETS ${${PROJECT_NAME}_LIBRARIES}
     LIBRARY DESTINATION ${INSTALL_LIB_DIR})

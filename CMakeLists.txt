@@ -30,4 +30,4 @@ co_export(
 co_install()
 
 # custom install rules for other files
-install(DIRECTORY cmake/templates DESTINATION ${INSTALL_CMAKE_DIR})
+install(DIRECTORY cmake/templates DESTINATION ${INSTALL_CMAKE_DIR}/cmake)
