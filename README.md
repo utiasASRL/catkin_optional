@@ -81,21 +81,30 @@ See below for more information on the commands
 ```
 The main difference to catkin is the additional `buildtool_depend` on `catkin_optional`.
 
-TODO:
-- Implement an example project in the example folder.
-- Make a README.in template for this file.
-- Populate this example with the example files on `cmake`.
-
 # Commands
 
 ### co_build_type()
+```co_build_type()```
+
+Initializes `CMAKE_BUILD_TYPE` cache variable, and enumerates the options.
 
 ### co_find()
+```co_find([deps...])```
 
-```co_find [dep1] [dep2] [...]```
+Finds the dependency, and adds its libraries to `${PROJECT_NAME}_DEPEND_LIBRARIES`, and `include_directories` its includes.
 
 ### co_export()
-```co_export [VERSION 1.2.3] [INCLUDE_DIRS includes]```
+```
+co_export([VERSION 1.2.3] [INCLUDE_DIRS includes...] [LIBRARIES libraries...]
+          [EXECUTABLES executables...] [DEPENDS deps...] [CFG_EXTRAS extras...])
+```
+
+This calls `catkin_package` if catkin is available, otherwise, it prepares the cmake config files and installation lists.
+
+### co_install()
+```co_install()```
+
+Creates the install target.
 
 # Variables
 
