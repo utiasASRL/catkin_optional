@@ -59,7 +59,7 @@ macro(co_find)
     find_package(${dep} REQUIRED)
 
     # dependency auto include and library aggregation
-    list(APPEND ${PROJECT_NAME}_DEPEND_LIBRARIES ${${dep}_LIBRARIES})
+    list(APPEND ${PROJECT_NAME}_DEPEND_LIBRARIES ${${dep}_LIBRARIES})    
     include_directories(${${dep}_INCLUDE_DIRS} ${${dep}_INCLUDE_DIR})
     string(TOUPPER ${dep} DEP)
     if(NOT ${dep} STREQUAL ${DEP})
@@ -105,9 +105,9 @@ macro(co_export)
     set(CONF_CFG_EXTRAS)
     foreach(cfg ${${PROJECT_NAME}_CFG_EXTRAS})
       if(NOT IS_ABSOLUTE ${cfg})
-	set(cfg_ABS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${cfg})
+        set(cfg_ABS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${cfg})
       else()
-	set(cfg_ABS ${cfg})
+        set(cfg_ABS ${cfg})
       endif()
       list(APPEND CONF_CFG_EXTRAS ${cfg_ABS})
     endforeach()
@@ -177,9 +177,10 @@ macro(co_install)
     endif()
   endforeach()
 
-
   # actually install
-  install(TARGETS ${${PROJECT_NAME}_LIBRARIES}
+  install(
+    TARGETS ${${PROJECT_NAME}_LIBRARIES}
+    ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
     LIBRARY DESTINATION ${INSTALL_LIB_DIR})
   install(TARGETS ${${PROJECT_NAME}_EXECUTABLES}
     RUNTIME DESTINATION ${INSTALL_BIN_DIR})
@@ -194,5 +195,5 @@ macro(co_install)
   endif()
 
   # uninstall target
-  add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${UNINSTALL_CMAKE})
+  add_custom_target(uninstall_${PROJECT_NAME} COMMAND ${CMAKE_COMMAND} -P ${UNINSTALL_CMAKE})
 endmacro()
